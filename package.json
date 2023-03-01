@@ -1,0 +1,26 @@
+{
+  "name": "edge-client-node",
+  "version": "0.0.1",
+  "description": "Edge Client for Nodejs",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha",
+    "install": "node-gyp rebuild"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nabto/edge-client-node.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "gypfile": true,
+  "bugs": {
+    "url": "https://github.com/nabto/edge-client-node/issues"
+  },
+  "homepage": "https://github.com/nabto/edge-client-node#readme",
+  "devDependencies": {
+    "@types/mocha": "^10.0.1",
+    "mocha": "^10.2.0",
+    "ts-node": "^10.9.1"
+  }
+}
