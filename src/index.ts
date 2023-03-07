@@ -1,30 +1,49 @@
-import { NabtoClient, LogMessage } from './NabtoClient/NabtoClient'
+import { NabtoClient, LogMessage, ConnectionOptions } from './NabtoClient/NabtoClient'
 import { NabtoClientImpl } from './NabtoClient/impl/NabtoClientImpl';
+const axios = require('axios').default;
 
-const testDevice = {
-    productId: "pr-fatqcwj9",
-    deviceId: "de-avmqjaje",
-    url: "https://pr-fatqcwj9.clients.nabto.net",
-    key: "sk-72c860c244a6014248e64d5273e3e0ec",
-    fp: "fcb78f8d53c67dbc4f72c36ca6cd2d5fc5592d584222059f0d76bdb514a9340c",
-    ServerKey: "sk-72c860c244a6014248e64d5273e3e0ec"
+const tcpTunnelDevice : ConnectionOptions = { ProductId: "pr-fatqcwj9", DeviceId: "de-ijrdq47i", ServerConnectToken: "WzwjoTabnvux" };
+
+async function manyConnections(n : number)
+{
+    const client = new NabtoClientImpl();
+    //client.setLogLevel("trace");
+    //client.setLogCallback((logMessage: LogMessage) => {
+    //    console.log(`${logMessage.severity}: ${logMessage.message}`);
+    //});
+
+    for (var i = 0; i < n; i++) {
+
+        console.log(`Connection ${i}`);
+        const connection = client.createConnection();
+        connection.setOptions({ PrivateKey: client.createPrivateKey() });
+        connection.setOptions(tcpTunnelDevice);
+        await connection.connect();
+
+        const tunnel = connection.createTCPTunnel();
+        await tunnel.open("http", 0);
+        const localPort = tunnel.getLocalPort();
+
+        const response = await axios.get(`http://127.0.0.1:${localPort}/`);
+
+        await tunnel.close();
+        await connection.close();
+
+    }
+
+    client.stop();
+
 }
 
 async function main() {
-    const client = new NabtoClientImpl();
-    client.setLogLevel("trace");
-    client.setLogCallback((logMessage: LogMessage) => {
-        console.log(`${logMessage.severity}: ${logMessage.message}`);
-    });
 
-    const connection = client.createConnection();
-    connection.setOptions({PrivateKey: client.createPrivateKey(), ProductId: testDevice.productId, DeviceId: testDevice.deviceId, ServerKey: testDevice.ServerKey});
-    await connection.connect();
+    const parallelOps : Array<Promise<void> > = new Array<Promise< void> >();
 
-    const coapRequest = connection.createCoapRequest("GET", "/hello-world");
-    const coapResponse = await coapRequest.execute();
+    for (var i = 0; i < 100; i++) {
+        parallelOps.push(manyConnections(100));
+    }
 
-    client.stop();
+    await Promise.all(parallelOps);
 
 }
 
