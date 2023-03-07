@@ -4,22 +4,20 @@
 #include <nabto/nabto_client.h>
 #include <napi.h>
 
-class CoapExecuteContext;
-
-class CoapExecuteContext {
- public:
-    CoapExecuteContext(NabtoClient* client, NabtoClientCoap* coap, Napi::Env env) 
-        : future_(nabto_client_future_new(client)),  deferred_(Napi::Promise::Deferred::New(env))
+class CoapExecuteContext
+{
+public:
+    CoapExecuteContext(NabtoClient *client, NabtoClientCoap *coap, Napi::Env env)
+        : future_(nabto_client_future_new(client)), deferred_(Napi::Promise::Deferred::New(env))
     {
-        ttsf_ = TTSF::New(env, "TSFN", 0, 1, this, [](Napi::Env, void *,
-                                                                                            CoapExecuteContext *ctx) { // Finalizer used to clean threads up
-            delete ctx;
-        });
+        ttsf_ = TTSF::New(env, "TSFN", 0, 1, this, [](Napi::Env, void *, CoapExecuteContext *ctx)
+                          { delete ctx; });
         nabto_client_coap_execute(coap, future_);
         nabto_client_future_set_callback(future_, CoapExecuteContext::futureCallback, this);
     }
 
-    ~CoapExecuteContext() {
+    ~CoapExecuteContext()
+    {
         nabto_client_future_free(future_);
     }
     static void CallJS(Napi::Env env, Napi::Function callback, CoapExecuteContext *context, void **data)
@@ -35,20 +33,21 @@ class CoapExecuteContext {
     }
     typedef Napi::TypedThreadSafeFunction<CoapExecuteContext, void *, CoapExecuteContext::CallJS> TTSF;
 
-    static void futureCallback(NabtoClientFuture* future, NabtoClientError ec, void* userData)
+    static void futureCallback(NabtoClientFuture *future, NabtoClientError ec, void *userData)
     {
-        CoapExecuteContext* coap = static_cast<CoapExecuteContext*>(userData);
-        coap->ec_ = ec;
-        
-        coap->ttsf_.NonBlockingCall();
-        coap->ttsf_.Release();
+        auto ctx = static_cast<CoapExecuteContext *>(userData);
+        ctx->ec_ = ec;
+
+        ctx->ttsf_.NonBlockingCall();
+        ctx->ttsf_.Release();
     }
 
-    Napi::Value Promise() {
+    Napi::Value Promise()
+    {
         return deferred_.Promise();
     }
 
-    NabtoClientFuture* future_;
+    NabtoClientFuture *future_;
     TTSF ttsf_;
     Napi::Promise::Deferred deferred_;
     NabtoClientError ec_;
@@ -72,11 +71,10 @@ private:
     Napi::Value GetResponseStatusCode(const Napi::CallbackInfo &info);
     Napi::Value GetResponseContentFormat(const Napi::CallbackInfo &info);
     /*
-     * return a promise 
+     * return a promise
      */
     Napi::Value Execute(const Napi::CallbackInfo &info);
-    
-    NabtoClient* client_;
-    NabtoClientCoap* coap_;
 
+    NabtoClient *client_;
+    NabtoClientCoap *coap_;
 };

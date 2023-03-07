@@ -6,7 +6,11 @@
         "<!(node -p \"require('node-addon-api').include_dir\")", 
         "./native_libraries/include" 
       ],
-      "sources": [ "native_code/nabto_client.cc", "native_code/node_nabto_client.cc", "native_code/connection.cc", "native_code/coap.cc" ],
+      "sources": [ "native_code/nabto_client.cc", 
+                   "native_code/node_nabto_client.cc", 
+                   "native_code/connection.cc", 
+                   "native_code/coap.cc",
+                   "native_code/tcp_tunnel.cc" ],
       'link_settings': {
         'libraries': [
             '-lnabto_client',

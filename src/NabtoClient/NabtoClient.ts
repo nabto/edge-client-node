@@ -26,12 +26,19 @@ export interface CoapRequest {
     execute() : Promise<CoapResponse>;
 }
 
+export interface TCPTunnel {
+    getLocalPort() : number;
+    open(service : string, localPort : number) : Promise<void>;
+    close() : Promise<void>;
+}
+
 export interface Connection {
     setOptions(options: ConnectionOptions) : void;
     getClientFingerprint() : string;
     connect() : Promise<void>;
     close() : Promise<void>;
     createCoapRequest(method: string, path: string): CoapRequest;
+    createTCPTunnel(): TCPTunnel;
 }
 
 export interface NabtoClient {
@@ -40,5 +47,5 @@ export interface NabtoClient {
     setLogLevel(logLevel: string) : void;
     setLogCallback(callback: (message: LogMessage) => void) : void;
     stop() : void;
-    //createConnection() : Connection;
+    createConnection() : Connection;
 }

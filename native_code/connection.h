@@ -5,8 +5,6 @@
 
 class Connection;
 
-class ConnectionConnectContext;
-
 class ConnectionConnectContext
 {
 public:
@@ -14,7 +12,7 @@ public:
       : future_(nabto_client_future_new(client)), deferred_(Napi::Promise::Deferred::New(env))
   {
     ttsf_ = TTSF::New(env, "TSFN", 0, 1, this, [](Napi::Env, void *,
-                                                  ConnectionConnectContext *ctx) { // Finalizer used to clean threads up
+                                                  ConnectionConnectContext *ctx) {
       delete ctx;
     });
     nabto_client_connection_connect(connection, future_);
@@ -40,11 +38,11 @@ public:
 
   static void futureCallback(NabtoClientFuture *future, NabtoClientError ec, void *userData)
   {
-    ConnectionConnectContext *coap = static_cast<ConnectionConnectContext *>(userData);
-    coap->ec_ = ec;
+    auto ctx = static_cast<ConnectionConnectContext *>(userData);
+    ctx->ec_ = ec;
 
-    coap->ttsf_.NonBlockingCall();
-    coap->ttsf_.Release();
+    ctx->ttsf_.NonBlockingCall();
+    ctx->ttsf_.Release();
   }
 
   Napi::Value Promise()
@@ -58,8 +56,6 @@ public:
   NabtoClientError ec_;
 };
 
-class ConnectionCloseContext;
-
 class ConnectionCloseContext
 {
 public:
@@ -67,7 +63,7 @@ public:
       : future_(nabto_client_future_new(client)), deferred_(Napi::Promise::Deferred::New(env))
   {
     ttsf_ = TTSF::New(env, "TSFN", 0, 1, this, [](Napi::Env, void *,
-                                                  ConnectionCloseContext *ctx) { // Finalizer used to clean threads up
+                                                  ConnectionCloseContext *ctx) {
       delete ctx;
     });
     nabto_client_connection_close(connection, future_);
@@ -93,11 +89,11 @@ public:
 
   static void futureCallback(NabtoClientFuture *future, NabtoClientError ec, void *userData)
   {
-    ConnectionCloseContext *coap = static_cast<ConnectionCloseContext *>(userData);
-    coap->ec_ = ec;
+    auto ctx = static_cast<ConnectionCloseContext *>(userData);
+    ctx->ec_ = ec;
 
-    coap->ttsf_.NonBlockingCall();
-    coap->ttsf_.Release();
+    ctx->ttsf_.NonBlockingCall();
+    ctx->ttsf_.Release();
   }
 
   Napi::Value Promise()
