@@ -49,6 +49,11 @@ export class ConnectionImpl implements Connection {
         return this.connection.connect();
     }
 
+    close() : Promise<void> {
+        return this.connection.close();
+    }
+
+
     createCoapRequest(method: string, path: string) : CoapRequest {
         return new CoapRequestImpl(this.nabtoClient, this.connection, method, path);
     }

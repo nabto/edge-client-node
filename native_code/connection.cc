@@ -11,6 +11,7 @@ Napi::Object Connection::Init(Napi::Env env, Napi::Object exports)
                     "Connection",
                     {InstanceMethod("setOptions", &Connection::SetOptions),
                      InstanceMethod("connect", &Connection::Connect),
+                     InstanceMethod("close", &Connection::Close),
                      InstanceMethod("getClientFingerprint", &Connection::GetClientFingerprint)});
 
     Napi::FunctionReference *constructor = new Napi::FunctionReference();
@@ -51,9 +52,8 @@ Napi::Value Connection::GetClientFingerprint(const Napi::CallbackInfo &info)
 
     if (ec != 0)
     {
-        Napi::TypeError::New(info.Env(), nabto_client_error_get_message(ec)).ThrowAsJavaScriptException();
-        Napi::Value result;
-        return result;
+        Napi::Error::New(info.Env(), nabto_client_error_get_message(ec)).ThrowAsJavaScriptException();
+        return info.Env().Undefined();
     }
 
     Napi::Value retVal = Napi::String::New(info.Env(), fp);
@@ -78,5 +78,11 @@ void Connection::SetOptions(const Napi::CallbackInfo &info)
 Napi::Value Connection::Connect(const Napi::CallbackInfo &info)
 {
     ConnectionConnectContext *ccc = new ConnectionConnectContext(client_, connection_, info.Env());
+    return ccc->Promise();
+}
+
+Napi::Value Connection::Close(const Napi::CallbackInfo &info)
+{
+    ConnectionCloseContext *ccc = new ConnectionCloseContext(client_, connection_, info.Env());
     return ccc->Promise();
 }

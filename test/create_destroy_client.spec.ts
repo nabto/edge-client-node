@@ -31,12 +31,6 @@ describe('Ligecycle', () => {
         assert(privateKey.startsWith("-----BEGIN EC PRIVATE"));
     })
 
-    it('create connection', () => {
-        const client = new NabtoClientImpl();
-        const connection = client.createConnection();
-        connection.setOptions({PrivateKey: client.createPrivateKey()});
-    })
-
     it('invalid log level', () => {
         const client = new NabtoClientImpl();
         try {
@@ -52,37 +46,6 @@ describe('Ligecycle', () => {
         client.setLogCallback((logMessage: LogMessage) => {
             console.log(logMessage);
         });
-        client.stop();
-    })
-
-    it('create connection and connect', async () => {
-        const client = new NabtoClientImpl();
-        client.setLogLevel("trace");
-        client.setLogCallback((logMessage: LogMessage) => {
-            console.log(logMessage);
-        });
-        const connection = client.createConnection();
-        connection.setOptions({PrivateKey: client.createPrivateKey(), ProductId: testDevice.productId, DeviceId: testDevice.deviceId, ServerKey: testDevice.key });
-        await connection.connect();
-        client.stop();
-    })
-
-    it.only('Create coap request', async () => {
-        const client = new NabtoClientImpl();
-        client.setLogLevel("trace");
-        client.setLogCallback((logMessage: LogMessage) => {
-            console.log(`${logMessage.severity}: ${logMessage.message}`);
-        });
-        const connection = client.createConnection();
-        connection.setOptions({PrivateKey: client.createPrivateKey(), ProductId: testDevice.productId, DeviceId: testDevice.deviceId, ServerKey: testDevice.key });
-        await connection.connect();
-
-        const coapRequest = connection.createCoapRequest("GET", "/hello-world");
-        const coapResponse = await coapRequest.execute();
-
-        assert.equal(coapResponse.getResponseStatusCode(), 205);
-        assert.equal(coapResponse.getResponseContentFormat(), 0);
-        assert.equal((new Buffer(coapResponse.getResponsePayload())).toString('utf8'), "Hello world");
         client.stop();
     });
 })

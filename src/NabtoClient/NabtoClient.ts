@@ -30,6 +30,7 @@ export interface Connection {
     setOptions(options: ConnectionOptions) : void;
     getClientFingerprint() : string;
     connect() : Promise<void>;
+    close() : Promise<void>;
     createCoapRequest(method: string, path: string): CoapRequest;
 }
 

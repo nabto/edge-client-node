@@ -36,10 +36,6 @@ NodeNabtoClient::~NodeNabtoClient()
 
 void NodeNabtoClient::Finalize(Napi::Env env)
 {
-    //nabto_client_set_log_callback(nabtoClient_, NULL, NULL);
-    //if (logCallback_ != nullptr) {
-    //    logCallback_.Release();
-    //}
 }
 
 void NodeNabtoClient::Stop(const Napi::CallbackInfo& info)
@@ -49,8 +45,6 @@ void NodeNabtoClient::Stop(const Napi::CallbackInfo& info)
         logCallback_.Release();
     }
 }
-
-
 
 Napi::Value NodeNabtoClient::GetVersion(const Napi::CallbackInfo& info) {
   return Napi::String::New(info.Env(), nabto_client_version());
@@ -62,9 +56,8 @@ Napi::Value NodeNabtoClient::CreatePrivateKey(const Napi::CallbackInfo& info)
     NabtoClientError ec = nabto_client_create_private_key(nabtoClient_, &key);
 
     if (ec != NABTO_CLIENT_EC_OK) {
-        Napi::TypeError::New(info.Env(), nabto_client_error_get_message(ec)).ThrowAsJavaScriptException();
-        Napi::Value result;
-        return result;
+        Napi::Error::New(info.Env(), nabto_client_error_get_message(ec)).ThrowAsJavaScriptException();
+        return info.Env().Undefined();
     }
 
     Napi::Value retVal = Napi::String::New(info.Env(), key);

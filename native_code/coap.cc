@@ -82,14 +82,14 @@ void Coap::SetRequestPayload(const Napi::CallbackInfo &info)
 
     if (!info[0].IsNumber())
     {
-        Napi::Error::New(info.Env(), "Expected a number")
+        Napi::TypeError::New(info.Env(), "Expected a number")
             .ThrowAsJavaScriptException();
         return;
     }
 
     if (!info[1].IsArrayBuffer())
     {
-        Napi::Error::New(info.Env(), "Expected an ArrayBuffer")
+        Napi::TypeError::New(info.Env(), "Expected an ArrayBuffer")
             .ThrowAsJavaScriptException();
         return;
     }

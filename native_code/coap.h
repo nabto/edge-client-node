@@ -26,11 +26,11 @@ class CoapExecuteContext {
     {
         if (context->ec_ == NABTO_CLIENT_EC_OK)
         {
-            context->deferred_.Resolve(Napi::String::New(env, "OK"));
+            context->deferred_.Resolve(env.Undefined());
         }
         else
         {
-            context->deferred_.Reject(Napi::String::New(env, nabto_client_error_get_message(context->ec_)));
+            context->deferred_.Reject(Napi::Error::New(env, nabto_client_error_get_message(context->ec_)).Value());
         }
     }
     typedef Napi::TypedThreadSafeFunction<CoapExecuteContext, void *, CoapExecuteContext::CallJS> TTSF;
