@@ -19,20 +19,20 @@ describe('Ligecycle', () => {
 
     it('test client create destroy', () => {
 
-        const client = new NabtoClientImpl();
+        const client = NabtoClient.create();
         const version = client.version();
         assert.equal(version, "5.12.0");
 
     });
 
     it('create private key', () => {
-        const client = new NabtoClientImpl();
+        const client = NabtoClient.create();
         const privateKey = client.createPrivateKey();
         assert(privateKey.startsWith("-----BEGIN EC PRIVATE"));
     })
 
     it('invalid log level', () => {
-        const client = new NabtoClientImpl();
+        const client = NabtoClient.create();
         try {
             expect(client.setLogLevel("foobar")).not.to.throw(RangeError);
           } catch (err) {
@@ -41,7 +41,7 @@ describe('Ligecycle', () => {
     })
 
     it('test logging', () => {
-        const client = new NabtoClientImpl();
+        const client = NabtoClient.create();
         client.setLogLevel("trace");
         client.setLogCallback((logMessage: LogMessage) => {
             console.log(logMessage);

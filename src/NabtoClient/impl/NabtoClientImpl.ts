@@ -86,7 +86,7 @@ export class ConnectionImpl implements Connection {
     }
 }
 
-export class NabtoClientImpl implements NabtoClient {
+export class NabtoClientImpl extends NabtoClient {
 
     nabtoClient: any;
 
@@ -116,6 +116,7 @@ export class NabtoClientImpl implements NabtoClient {
     }
 
     constructor() {
+        super();
         this.nabtoClient = new nabto_client.NabtoClient();
     }
 }

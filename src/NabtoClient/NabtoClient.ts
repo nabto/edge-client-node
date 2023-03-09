@@ -1,3 +1,5 @@
+import { NabtoClientImpl } from './impl/NabtoClientImpl';
+
 
 export interface ConnectionOptions {
     Local?: boolean,
@@ -41,11 +43,14 @@ export interface Connection {
     createTCPTunnel(): TCPTunnel;
 }
 
-export interface NabtoClient {
-    version() : string;
-    createPrivateKey(): string;
-    setLogLevel(logLevel: string) : void;
-    setLogCallback(callback: (message: LogMessage) => void) : void;
-    stop() : void;
-    createConnection() : Connection;
+export abstract class NabtoClient {
+    static create() : NabtoClient {
+        return new NabtoClientImpl();
+    }
+    abstract version() : string;
+    abstract createPrivateKey(): string;
+    abstract setLogLevel(logLevel: string) : void;
+    abstract setLogCallback(callback: (message: LogMessage) => void) : void;
+    abstract stop() : void;
+    abstract createConnection() : Connection;
 }
