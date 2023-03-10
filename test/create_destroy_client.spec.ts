@@ -2,9 +2,9 @@ import 'mocha'
 import { strict as assert } from 'node:assert';
 import chai from 'chai';
 
-import { NabtoClient, LogMessage } from '../src/NabtoClient/NabtoClient'
+import { NabtoClient, LogMessage, NabtoClientFactory } from '../src/NabtoClient/NabtoClient'
 import { NabtoClientImpl } from '../src/NabtoClient/impl/NabtoClientImpl';
- 
+
 const expect = chai.expect;
 
 const testDevice = {
@@ -19,20 +19,20 @@ describe('Ligecycle', () => {
 
     it('test client create destroy', () => {
 
-        const client = NabtoClient.create();
+        const client = NabtoClientFactory.create();
         const version = client.version();
         assert.equal(version, "5.12.0");
 
     });
 
     it('create private key', () => {
-        const client = NabtoClient.create();
+        const client = NabtoClientFactory.create();
         const privateKey = client.createPrivateKey();
         assert(privateKey.startsWith("-----BEGIN EC PRIVATE"));
     })
 
     it('invalid log level', () => {
-        const client = NabtoClient.create();
+        const client = NabtoClientFactory.create();
         try {
             expect(client.setLogLevel("foobar")).not.to.throw(RangeError);
           } catch (err) {
@@ -41,7 +41,7 @@ describe('Ligecycle', () => {
     })
 
     it('test logging', () => {
-        const client = NabtoClient.create();
+        const client = NabtoClientFactory.create();
         client.setLogLevel("trace");
         client.setLogCallback((logMessage: LogMessage) => {
             console.log(logMessage);

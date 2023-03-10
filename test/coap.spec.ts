@@ -4,7 +4,7 @@ import chai from 'chai';
 
 import { NabtoClient, LogMessage } from '../src/NabtoClient/NabtoClient'
 import { NabtoClientImpl } from '../src/NabtoClient/impl/NabtoClientImpl';
- 
+
 const expect = chai.expect;
 
 const testDevice = {

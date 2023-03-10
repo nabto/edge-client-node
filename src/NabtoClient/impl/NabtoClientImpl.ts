@@ -86,7 +86,7 @@ export class ConnectionImpl implements Connection {
     }
 }
 
-export class NabtoClientImpl extends NabtoClient {
+export class NabtoClientImpl implements NabtoClient {
 
     nabtoClient: any;
 
@@ -105,7 +105,7 @@ export class NabtoClientImpl extends NabtoClient {
     setLogLevel(logLevel: string) {
         this.nabtoClient.setLogLevel(logLevel);
     }
-    
+
     setLogCallback(callback: (logMessage: LogMessage) => void)
     {
         this.nabtoClient.setLogCallback(callback);
@@ -116,7 +116,6 @@ export class NabtoClientImpl extends NabtoClient {
     }
 
     constructor() {
-        super();
         this.nabtoClient = new nabto_client.NabtoClient();
     }
 }
