@@ -2,9 +2,9 @@
   "name": "edge-client-node",
   "version": "0.0.1",
   "description": "Edge Client for Nodejs",
-  "main": "dist/edge-client-node/src/NabtoClient/NabtoClient.js",
-  "module": "esm/edge-client-node/src/NabtoClient/NabtoClient.js",
-  "types": "dist/edge-client-node/src/NabtoClient/NabtoClient.d.ts",
+  "main": "dist/NabtoClient/NabtoClient.js",
+  "module": "esm/NabtoClient/NabtoClient.js",
+  "types": "dist/NabtoClient/NabtoClient.d.ts",
   "scripts": {
     "test": "mocha --timeout 15000",
     "build:cjs": "tsc --module commonjs --outDir dist",
