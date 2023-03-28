@@ -9,7 +9,8 @@
     "test": "mocha --timeout 15000",
     "build:cjs": "tsc --module commonjs --outDir dist",
     "build:esm": "tsc --module es2022 --outDir esm",
-    "install": "rm -rf esm dist && node-gyp rebuild && npm run build:esm && npm run build:cjs"
+    "build": "npm run build:esm && npm run build:cjs",
+    "install": "node-gyp rebuild && npm run build"
   },
   "repository": {
     "type": "git",
