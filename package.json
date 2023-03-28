@@ -2,10 +2,14 @@
   "name": "edge-client-node",
   "version": "0.0.1",
   "description": "Edge Client for Nodejs",
-  "main": "index.js",
+  "main": "dist/edge-client-node/src/NabtoClient/NabtoClient.js",
+  "module": "esm/edge-client-node/src/NabtoClient/NabtoClient.js",
+  "types": "dist/edge-client-node/src/NabtoClient/NabtoClient.d.ts",
   "scripts": {
     "test": "mocha --timeout 15000",
-    "install": "node-gyp rebuild"
+    "build:cjs": "tsc --module commonjs --outDir dist",
+    "build:esm": "tsc --module es2022 --outDir esm",
+    "install": "rm -rf esm dist && node-gyp rebuild && npm run build:esm && npm run build:cjs"
   },
   "repository": {
     "type": "git",
