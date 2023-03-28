@@ -1,5 +1,4 @@
 node_modules
-native_libraries
 build
 /dist/
 /esm/
