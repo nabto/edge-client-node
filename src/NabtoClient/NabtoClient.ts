@@ -8,8 +8,8 @@ export interface ConnectionOptions {
     ProductId?: string,
     DeviceId?: string,
     ServerConnectToken?: string,
-    ServerKey?: string
-
+    ServerKey?: string,
+    ServerUrl?: string,
 }
 
 export interface LogMessage {
