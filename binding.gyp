@@ -13,6 +13,7 @@
                    "native_code/node_nabto_client.cc",
                    "native_code/connection.cc",
                    "native_code/coap.cc",
+                   "native_code/stream.cc",
                    "native_code/tcp_tunnel.cc" ],
       'link_settings': {
         'libraries': [

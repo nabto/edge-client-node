@@ -1,4 +1,4 @@
-import { NabtoClient, Connection, ConnectionOptions, LogMessage, CoapRequest, CoapResponse, TCPTunnel } from '../NabtoClient'
+import { NabtoClient, Connection, ConnectionOptions, LogMessage, CoapRequest, CoapResponse, TCPTunnel, Stream } from '../NabtoClient'
 var nabto_client = require('bindings')('nabto_client');
 
 export class CoapResponseImpl implements CoapResponse {
@@ -51,6 +51,49 @@ export class TCPTunnelImpl implements TCPTunnel {
     }
 }
 
+export class StreamImpl implements Stream {
+    stream: any;
+
+    open(streamPort: number): Promise<void>
+    {
+        return this.stream.open(streamPort);
+    }
+
+    readSome(): Promise<ArrayBuffer>
+    {
+        return this.stream.readSome().then(() => {
+            return this.stream.getData();
+        });
+    }
+
+    readAll(length: number): Promise<ArrayBuffer>
+    {
+        return this.stream.readAll(length).then(() => {
+            return this.stream.getData();
+        });
+    }
+
+    write(data: ArrayBuffer): Promise<void>
+    {
+        return this.stream.write(data);
+    }
+
+    close(): Promise<void>
+    {
+        return this.stream.close();
+    }
+
+    abort(): void
+    {
+        return this.stream.abort();
+    }
+
+
+    constructor(nabtoClient: any, connection: any) {
+        this.stream = new nabto_client.Stream(nabtoClient, connection);
+    }
+}
+
 export class ConnectionImpl implements Connection {
     connection: any;
     nabtoClient: any;
@@ -78,6 +121,10 @@ export class ConnectionImpl implements Connection {
 
     createTCPTunnel() : TCPTunnel {
         return new TCPTunnelImpl(this.nabtoClient, this.connection);
+    }
+
+    createStream(): Stream {
+        return new StreamImpl(this.nabtoClient, this.connection);
     }
 
     constructor(client: any) {

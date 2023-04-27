@@ -34,6 +34,15 @@ export interface TCPTunnel {
     close() : Promise<void>;
 }
 
+export interface Stream {
+    open(streamPort: number): Promise<void>;
+    readSome(): Promise<ArrayBuffer>;
+    readAll(length: number): Promise<ArrayBuffer>;
+    write(data: ArrayBuffer): Promise<void>;
+    close(): Promise<void>;
+    abort(): void;
+}
+
 export interface Connection {
     setOptions(options: ConnectionOptions) : void;
     getClientFingerprint() : string;
@@ -41,6 +50,7 @@ export interface Connection {
     close() : Promise<void>;
     createCoapRequest(method: string, path: string): CoapRequest;
     createTCPTunnel(): TCPTunnel;
+    createStream(): Stream;
 }
 
 export interface NabtoClient {

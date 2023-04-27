@@ -3,11 +3,13 @@
 #include "connection.h"
 #include "coap.h"
 #include "tcp_tunnel.h"
+#include "stream.h"
 
 Napi::Object InitAll(Napi::Env env, Napi::Object exports) {
   Napi::Object tmp = NodeNabtoClient::Init(env, exports);
   tmp = Coap::Init(env,tmp);
   tmp = TCPTunnel::Init(env,tmp);
+  tmp = Stream::Init(env, tmp);
   return Connection::Init(env, tmp);
 }
 
