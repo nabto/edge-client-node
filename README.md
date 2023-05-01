@@ -2,6 +2,11 @@
 
 Node JS wrapper for Nabto Edge Client.
 
+
+## Notes
+
+Below usage has caused issues if typescript is not a dependency of the package you are installing it into. We should clearify if typescript should be a dependency, or if ts-node should be elevated from dev-dependency or what is what.
+
 ## Usage
 
 This package can be installed directly from github using npm:
