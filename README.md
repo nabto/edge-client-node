@@ -1,5 +1,7 @@
 # Edge Client Node
 
+Warning: This wrapper is not yet production ready, use it at your own risk.
+
 Node JS wrapper for Nabto Edge Client.
 
 
