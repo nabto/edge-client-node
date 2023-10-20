@@ -31,7 +31,9 @@ public:
     }
     else
     {
-      context->deferred_.Reject(Napi::Error::New(env, nabto_client_error_get_message(context->ec_)).Value());
+      Napi::Error err = Napi::Error::New(callback.Env(), nabto_client_error_get_message(context->ec_));
+      err.Set("code", nabto_client_error_get_string(context->ec_));
+      context->deferred_.Reject(err.Value());
     }
   }
   typedef Napi::TypedThreadSafeFunction<ConnectionConnectContext, void *, ConnectionConnectContext::CallJS> TTSF;
@@ -82,7 +84,9 @@ public:
     }
     else
     {
-      context->deferred_.Reject(Napi::Error::New(env, nabto_client_error_get_message(context->ec_)).Value());
+      Napi::Error err = Napi::Error::New(callback.Env(), nabto_client_error_get_message(context->ec_));
+      err.Set("code", nabto_client_error_get_string(context->ec_));
+      context->deferred_.Reject(err.Value());
     }
   }
   typedef Napi::TypedThreadSafeFunction<ConnectionCloseContext, void *, ConnectionCloseContext::CallJS> TTSF;
@@ -124,6 +128,9 @@ private:
   Napi::Value Connect(const Napi::CallbackInfo &info);
   Napi::Value Close(const Napi::CallbackInfo &info);
   void SetOptions(const Napi::CallbackInfo &info);
+  Napi::Value GetLocalError(const Napi::CallbackInfo& info);
+  Napi::Value GetRemoteError(const Napi::CallbackInfo& info);
+  Napi::Value GetDirectCandidateError(const Napi::CallbackInfo& info);
 
   NabtoClient *client_;
   NabtoClientConnection *connection_;

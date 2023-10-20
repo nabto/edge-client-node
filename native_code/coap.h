@@ -28,7 +28,9 @@ public:
         }
         else
         {
-            context->deferred_.Reject(Napi::Error::New(env, nabto_client_error_get_message(context->ec_)).Value());
+            Napi::Error err = Napi::Error::New(callback.Env(), nabto_client_error_get_message(context->ec_));
+            err.Set("code", nabto_client_error_get_string(context->ec_));
+            context->deferred_.Reject(err.Value());
         }
     }
     typedef Napi::TypedThreadSafeFunction<CoapExecuteContext, void *, CoapExecuteContext::CallJS> TTSF;
