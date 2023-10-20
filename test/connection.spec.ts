@@ -4,7 +4,7 @@ import chai from 'chai';
 
 import { NabtoClient, LogMessage, Connection } from '../src/NabtoClient/NabtoClient'
 import { NabtoClientImpl } from '../src/NabtoClient/impl/NabtoClientImpl';
- 
+
 const expect = chai.expect;
 
 const testDevice = {
@@ -45,6 +45,33 @@ describe('Connection', () => {
         client.stop();
     })
 
+    it('connect no channels', async () => {
+        const client = new NabtoClientImpl();
+       //client.setLogLevel("trace");
+      //  client.setLogCallback((logMessage: LogMessage) => {
+      //      console.log(logMessage);
+      //  });
+        const connection = client.createConnection();
+        connection.setOptions({PrivateKey: client.createPrivateKey(), ProductId: "pr-foobar", DeviceId: "de-foobar", ServerKey: testDevice.key });
+        try {
+            await connection.connect();
+            expect(true).to.be.false;
+        } catch (err: any) {
+            expect(err).to.have.property("code");
+            expect(err.code).to.be.a('string').and.to.equal("NABTO_CLIENT_EC_NO_CHANNELS");
+            expect(err).to.have.property("localError");
+            expect(err.localError).to.have.property("code");
+            expect(err.localError.code).to.be.a('string').and.to.equal("NABTO_CLIENT_EC_NOT_FOUND");
+            expect(err).to.have.property("remoteError");
+            expect(err.remoteError).to.have.property("code");
+            expect(err.remoteError.code).to.be.a('string').and.to.equal("NABTO_CLIENT_EC_UNKNOWN_PRODUCT_ID");
+            expect(err).to.have.property("directCandidatesError");
+            expect(err.directCandidatesError).to.have.property("code");
+            expect(err.directCandidatesError.code).to.be.a('string').and.to.equal("NABTO_CLIENT_EC_NONE");
+        }
+        client.stop();
+    })
+
     it('close connection', async () => {
         const client = new NabtoClientImpl();
         // client.setLogLevel("trace");
@@ -74,7 +101,7 @@ describe('Connection', () => {
             connection.setOptions({PrivateKey: client.createPrivateKey(), ProductId: testDevice.productId, DeviceId: testDevice.deviceId, ServerKey: testDevice.key });
             connections.push(connection);
         }
-        
+
         connections.forEach(c => {
             connectPromises.push(c.connect());
         })
@@ -89,5 +116,5 @@ describe('Connection', () => {
 
         client.stop();
     })
-    
+
 });

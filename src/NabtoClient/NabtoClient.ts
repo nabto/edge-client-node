@@ -1,5 +1,25 @@
 import { NabtoClientImpl } from './impl/NabtoClientImpl';
 
+/**
+ * All promise rejections will throw an instance of this error.
+ * code is the string representation of the underlying client SDK error
+ * Error.message will be the error message from the underlying client SDK error.
+ */
+export interface NabtoError extends Error {
+    code: string,
+}
+
+/**
+ * If a promise rejection from Connection.connect() has the code: `NABTO_CLIENT_EC_NO_CHANNELS` it will be an instance of this error.
+ * remoteError is the error of the remote connect attempt
+ * localError is the error of the local connect attempt
+ * directCandidatesError is the error of the direct candidate connect attempt
+ */
+export interface NabtoNoChannelsError extends NabtoError {
+    remoteError: NabtoError,
+    localError: NabtoError,
+    directCandidatesError: NabtoError,
+}
 
 export interface ConnectionOptions {
     Local?: boolean,

@@ -12,6 +12,9 @@ Napi::Object Connection::Init(Napi::Env env, Napi::Object exports)
                     {InstanceMethod("setOptions", &Connection::SetOptions),
                      InstanceMethod("connect", &Connection::Connect),
                      InstanceMethod("close", &Connection::Close),
+                     InstanceMethod("getLocalError", &Connection::GetLocalError),
+                     InstanceMethod("getRemoteError", &Connection::GetRemoteError),
+                     InstanceMethod("getDirectCandidatesError", &Connection::GetDirectCandidatesError),
                      InstanceMethod("getClientFingerprint", &Connection::GetClientFingerprint)});
 
     Napi::FunctionReference *constructor = new Napi::FunctionReference();
@@ -85,4 +88,31 @@ Napi::Value Connection::Close(const Napi::CallbackInfo &info)
 {
     ConnectionCloseContext *ccc = new ConnectionCloseContext(client_, connection_, info.Env());
     return ccc->Promise();
+}
+
+
+Napi::Value Connection::GetLocalError(const Napi::CallbackInfo& info)
+{
+    auto ec = nabto_client_connection_get_local_channel_error_code(connection_);
+    Napi::Error err = Napi::Error::New(info.Env(), nabto_client_error_get_message(ec));
+    err.Set("code", nabto_client_error_get_string(ec));
+    return err.Value();
+}
+
+Napi::Value Connection::GetRemoteError(const Napi::CallbackInfo& info)
+{
+    auto ec = nabto_client_connection_get_remote_channel_error_code(connection_);
+    Napi::Error err = Napi::Error::New(info.Env(), nabto_client_error_get_message(ec));
+    err.Set("code", nabto_client_error_get_string(ec));
+    return err.Value();
+
+}
+
+Napi::Value Connection::GetDirectCandidatesError(const Napi::CallbackInfo& info)
+{
+    auto ec = nabto_client_connection_get_direct_candidates_channel_error_code(connection_);
+    Napi::Error err = Napi::Error::New(info.Env(), nabto_client_error_get_message(ec));
+    err.Set("code", nabto_client_error_get_string(ec));
+    return err.Value();
+
 }
