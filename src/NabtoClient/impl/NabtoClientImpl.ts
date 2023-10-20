@@ -1,4 +1,4 @@
-import { NabtoClient, Connection, ConnectionOptions, LogMessage, CoapRequest, CoapResponse, TCPTunnel, Stream, NabtoError, ConnectNoChannelsError } from '../NabtoClient'
+import { NabtoClient, Connection, ConnectionOptions, LogMessage, CoapRequest, CoapResponse, TCPTunnel, Stream, NabtoError, NabtoNoChannelsError } from '../NabtoClient'
 var nabto_client = require('bindings')('nabto_client');
 
 export class CoapResponseImpl implements CoapResponse {
@@ -111,11 +111,11 @@ export class ConnectionImpl implements Connection {
             if (err.code == "NABTO_CLIENT_EC_NO_CHANNELS") {
                 let localError = this.connection.getLocalError();
                 let remoteError = this.connection.getRemoteError();
-                let directError = this.connection.getDirectCandidateError();
-                let error: ConnectNoChannelsError = <ConnectNoChannelsError>err;
+                let directError = this.connection.getDirectCandidatesError();
+                let error: NabtoNoChannelsError = <NabtoNoChannelsError>err;
                 error.localError = localError;
                 error.remoteError = remoteError;
-                error.directCandidateError = directError;
+                error.directCandidatesError = directError;
                 throw error;
             } else {
                 throw err;

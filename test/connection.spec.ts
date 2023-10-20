@@ -65,9 +65,9 @@ describe('Connection', () => {
             expect(err).to.have.property("remoteError");
             expect(err.remoteError).to.have.property("code");
             expect(err.remoteError.code).to.be.a('string').and.to.equal("NABTO_CLIENT_EC_UNKNOWN_PRODUCT_ID");
-            expect(err).to.have.property("directCandidateError");
-            expect(err.directCandidateError).to.have.property("code");
-            expect(err.directCandidateError.code).to.be.a('string').and.to.equal("NABTO_CLIENT_EC_NONE");
+            expect(err).to.have.property("directCandidatesError");
+            expect(err.directCandidatesError).to.have.property("code");
+            expect(err.directCandidatesError.code).to.be.a('string').and.to.equal("NABTO_CLIENT_EC_NONE");
         }
         client.stop();
     })

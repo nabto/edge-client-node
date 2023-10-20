@@ -13,12 +13,12 @@ export interface NabtoError extends Error {
  * If a promise rejection from Connection.connect() has the code: `NABTO_CLIENT_EC_NO_CHANNELS` it will be an instance of this error.
  * remoteError is the error of the remote connect attempt
  * localError is the error of the local connect attempt
- * directCandidateError is the error of the direct candidate connect attempt
+ * directCandidatesError is the error of the direct candidate connect attempt
  */
-export interface ConnectNoChannelsError extends NabtoError {
+export interface NabtoNoChannelsError extends NabtoError {
     remoteError: NabtoError,
     localError: NabtoError,
-    directCandidateError: NabtoError,
+    directCandidatesError: NabtoError,
 }
 
 export interface ConnectionOptions {

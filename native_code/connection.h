@@ -130,7 +130,7 @@ private:
   void SetOptions(const Napi::CallbackInfo &info);
   Napi::Value GetLocalError(const Napi::CallbackInfo& info);
   Napi::Value GetRemoteError(const Napi::CallbackInfo& info);
-  Napi::Value GetDirectCandidateError(const Napi::CallbackInfo& info);
+  Napi::Value GetDirectCandidatesError(const Napi::CallbackInfo& info);
 
   NabtoClient *client_;
   NabtoClientConnection *connection_;
