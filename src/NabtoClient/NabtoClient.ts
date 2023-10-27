@@ -5,8 +5,13 @@ import { NabtoClientImpl } from './impl/NabtoClientImpl';
  * code is the string representation of the underlying client SDK error
  * Error.message will be the error message from the underlying client SDK error.
  */
-export interface NabtoError extends Error {
-    code: string,
+export class NabtoError extends Error {
+    code?: string
+    constructor(message?: string, code?: string) {
+        super(message);
+        this.code = code;
+        Object.setPrototypeOf(this, NabtoError.prototype);
+    }
 }
 
 /**
@@ -15,10 +20,18 @@ export interface NabtoError extends Error {
  * localError is the error of the local connect attempt
  * directCandidatesError is the error of the direct candidate connect attempt
  */
-export interface NabtoNoChannelsError extends NabtoError {
-    remoteError: NabtoError,
-    localError: NabtoError,
-    directCandidatesError: NabtoError,
+export class NabtoNoChannelsError extends NabtoError {
+    remoteError?: NabtoError;
+    localError?: NabtoError;
+    directCandidatesError?: NabtoError;
+
+    constructor(message?: string, code?: string, remoteError?: NabtoError, localError?: NabtoError, directCandidatesError?: NabtoError) {
+        super(message, code);
+        this.remoteError = remoteError;
+        this.localError = localError;
+        this.directCandidatesError = directCandidatesError;
+        Object.setPrototypeOf(this, NabtoNoChannelsError.prototype);
+    }
 }
 
 export interface ConnectionOptions {
