@@ -24,7 +24,9 @@ export class CoapRequestImpl implements CoapRequest {
     }
 
     async execute() : Promise<CoapResponse> {
-        const result = await this.coapRequest.execute();
+        const result = await this.coapRequest.execute().catch((err: any) => {
+            throw new NabtoError(err.message, err.code);
+        });
         return new CoapResponseImpl(this.coapRequest);
     }
 
@@ -40,11 +42,15 @@ export class TCPTunnelImpl implements TCPTunnel {
         return this.tcpTunnel.getLocalPort();
     }
     open(service : string, localPort : number) : Promise<void> {
-        return this.tcpTunnel.open(service, localPort);
+        return this.tcpTunnel.open(service, localPort).catch((err: any) => {
+            throw new NabtoError(err.message, err.code);
+        });
     }
 
     close() : Promise<void> {
-        return this.tcpTunnel.close();
+        return this.tcpTunnel.close().catch((err: any) => {
+            throw new NabtoError(err.message, err.code);
+        });
     }
     constructor(nabtoClient: any, connection: any) {
         this.tcpTunnel = new nabto_client.TCPTunnel(nabtoClient, connection);
@@ -56,13 +62,17 @@ export class StreamImpl implements Stream {
 
     open(streamPort: number): Promise<void>
     {
-        return this.stream.open(streamPort);
+        return this.stream.open(streamPort).catch((err: any) => {
+            throw new NabtoError(err.message, err.code);
+        });
     }
 
     readSome(): Promise<ArrayBuffer>
     {
         return this.stream.readSome().then(() => {
             return this.stream.getData();
+        }).catch((err: any) => {
+            throw new NabtoError(err.message, err.code);
         });
     }
 
@@ -70,17 +80,23 @@ export class StreamImpl implements Stream {
     {
         return this.stream.readAll(length).then(() => {
             return this.stream.getData();
+        }).catch((err: any) => {
+            throw new NabtoError(err.message, err.code);
         });
     }
 
     write(data: ArrayBuffer): Promise<void>
     {
-        return this.stream.write(data);
+        return this.stream.write(data).catch((err: any) => {
+            throw new NabtoError(err.message, err.code);
+        });
     }
 
     close(): Promise<void>
     {
-        return this.stream.close();
+        return this.stream.close().catch((err: any) => {
+            throw new NabtoError(err.message, err.code);
+        });
     }
 
     abort(): void
@@ -112,10 +128,7 @@ export class ConnectionImpl implements Connection {
                 let localError = this.connection.getLocalError();
                 let remoteError = this.connection.getRemoteError();
                 let directError = this.connection.getDirectCandidatesError();
-                let error: NabtoNoChannelsError = <NabtoNoChannelsError>err;
-                error.localError = localError;
-                error.remoteError = remoteError;
-                error.directCandidatesError = directError;
+                let error = new NabtoNoChannelsError(err.message, err.code, remoteError, localError, directError);
                 throw error;
             } else {
                 throw err;
@@ -124,7 +137,9 @@ export class ConnectionImpl implements Connection {
     }
 
     close() : Promise<void> {
-        return this.connection.close();
+        return this.connection.close().catch((err: any) => {
+            throw new NabtoError(err.message, err.code);
+        });
     }
 
 

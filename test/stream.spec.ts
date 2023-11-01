@@ -1,5 +1,5 @@
 import 'mocha'
-import { NabtoClient } from '../src/NabtoClient/NabtoClient'
+import { NabtoClient, NabtoError } from '../src/NabtoClient/NabtoClient'
 import { NabtoClientImpl } from '../src/NabtoClient/impl/NabtoClientImpl';
 import { streamDevice } from './test_devices';
 import { expect } from 'chai';
@@ -42,6 +42,36 @@ describe('Streaming', () => {
       expect(echoBufView[i]).to.equal(bufView[i]);
     }
     await stream.close();
+    stream.abort();
+  });
+
+  it('close stream error', async () => {
+    const connection = client.createConnection();
+    client.setLogLevel("info");
+    client.setLogCallback((logMessage) => {
+        console.log(logMessage.message);
+    });
+    connection.setOptions(streamDevice);
+    connection.setOptions({PrivateKey: client.createPrivateKey()});
+    let data = "Hwllo World";
+    let buf = new ArrayBuffer(data.length);
+    let bufView = new Uint8Array(buf);
+    for (let i = 0; i  < data.length; i++) {
+      bufView[i] = data.charCodeAt(i);
+    }
+    await connection.connect();
+    const stream = connection.createStream();
+    await stream.open(42);
+    let p = stream.readAll(data.length);
+    await stream.close();
+    try {
+      await p;
+    } catch (err) {
+      expect(err).to.be.instanceOf(NabtoError);
+      if (!(err instanceof NabtoError)) {
+        expect(true).to.be.false;
+      }
+    }
     stream.abort();
   });
 });
