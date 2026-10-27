@@ -21,7 +21,7 @@ describe('Ligecycle', () => {
 
         const client = NabtoClientFactory.create();
         const version = client.version();
-        assert.equal(version, "5.12.0");
+        assert.equal(version, "5.15.5");
 
     });
 
